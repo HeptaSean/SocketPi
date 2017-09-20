@@ -3,17 +3,29 @@ SocketPi is my first project for the Raspberry Pi 3.
 It uses a simple 433 MHz transmitter to switch some old radio controlled
 sockets.
 
-## Switching the Sockets
-For the socket switching, we use the [wiringPi](http://wiringpi.com/) C
-library.
+## Install Dependencies
+First, we want to work in a Python virtual environment:
+    sudo apt install python3-pip
+    sudo -H pip3 install virtualenv virtualenvwrapper
 
-### Install Dependencies
-Apart from the packages that are installed on Raspbian by default, we need
-wiringPi, which is installed from git:
-    sudo apt install git
-    git clone git://git.drogon.net/wiringPi
-    cd wiringPi
-    ./build
+We add the following at the end of .bashrc:
+    export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
+    export WORKON_HOME=~/PythonEnvs
+    source /usr/local/bin/virtualenvwrapper.sh
+
+We create a virtual environment for our socket project, which we can
+deactivate and later reenter with the helpers from virtualenvwrapper:
+    mkvirtualenv socket
+    deactivate
+    workon socket
+
+The Python dependencies are installed by:
+    pip install -r requirements.txt
+(This has to be executed while being inside the virtual environment.)
+
+## Switching the Sockets
+For the socket switching, we use a Python binding of the
+[wiringPi](http://wiringpi.com/) C library.
 
 ### Analysis of Existing Sockets
 The sockets are three [düwi](https://de.wikipedia.org/wiki/Düwi) model 0369-3.
@@ -35,12 +47,10 @@ B      | 1108   | 1105
 C      | 1348   | 1345
 D      | 1300   | 1297
 
-### C Program to Switch Sockets
-A small C program, which sends the on/off codes to sockets numbered 1 to 4,
-is implemented in socket_switch.c.
-It only depends on the wiringPi library being installed and can be compiled
-by:
-    gcc socket_switch.c -o socket_switch -lwiringPi
+### Python Script to Switch Sockets
+A small Python script, which sends the on/off codes to sockets A to D,
+is implemented in socket_switch.py and can be executed by:
+    python socket_switch.py <socket>
 
 ## Web Interface
 The sockets shall be controlled by a simple web interface created with
@@ -49,21 +59,6 @@ We roughly follow the guide in
 https://www.digitalocean.com/community/tutorials/how-to-serve-django-applications-with-uwsgi-and-nginx-on-ubuntu-14-04.
 
 ### Install Dependencies
-First, we want to work in a Python virtual environment:
-    sudo apt install python3-pip
-    sudo -H pip3 install virtualenv virtualenvwrapper
-We add the following at the end of .bashrc:
-    export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
-    export WORKON_HOME=~/PythonEnvs
-    source /usr/local/bin/virtualenvwrapper.sh
-
-We create a virtual environment for our socket project, which we can
-deactivate and later reenter with the helpers from virtualenvwrapper:
-    mkvirtualenv socket
-    deactivate
-    workon socket
-    deactivate
-
 We install uWSGI (globally, outside of virtual environments):
     sudo apt install python3-dev
     sudo -H pip3 install uwsgi
