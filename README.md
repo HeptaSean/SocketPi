@@ -5,22 +5,27 @@ sockets.
 
 ## Install Dependencies
 First, we want to work in a Python virtual environment:
+
     sudo apt install python3-pip
     sudo -H pip3 install virtualenv virtualenvwrapper
 
 We add the following at the end of .bashrc:
+
     export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
     export WORKON_HOME=~/PythonEnvs
     source /usr/local/bin/virtualenvwrapper.sh
 
 We create a virtual environment for our socket project, which we can
 deactivate and later reenter with the helpers from virtualenvwrapper:
+
     mkvirtualenv socket
     deactivate
     workon socket
 
 The Python dependencies are installed by:
+
     pip install -r requirements.txt
+
 (This has to be executed while being inside the virtual environment.)
 
 ## Switching the Sockets
@@ -50,6 +55,7 @@ D      | 1300   | 1297
 ### Python Script to Switch Sockets
 A small Python script, which sends the on/off codes to sockets A to D,
 is implemented in socket_switch.py and can be executed by:
+
     python socket_switch.py <socket>
 
 ## Web Interface
@@ -60,10 +66,12 @@ https://www.digitalocean.com/community/tutorials/how-to-serve-django-application
 
 ### Install Dependencies
 We install uWSGI (globally, outside of virtual environments):
+
     sudo apt install python3-dev
     sudo -H pip3 install uwsgi
 
 And we install Nginx as a reverse proxy in front of uWSGI:
+
     sudo apt install nginx-light
 
 ### Configure uWSGI and Nginx
@@ -73,6 +81,7 @@ http://localhost/socket.
 For uWSGI, we create the socket_app.ini uWSGI configuration file and a
 socket_app.service systemd unit, which is linked from /etc/systemd/system/,
 enabled and started:
+
     sudo ln -s /home/pi/socket/socket_app.service /etc/systemd/system/
     sudo systemctl enable socket_app.service
     sudo systemctl start socket_app.service
@@ -81,6 +90,7 @@ For Nginx, we create the socket_app.conf Nginx configuration file, which is
 linked from /etc/nginx/sites-available/ and enabled by a symlink in
 /etc/nginx/sites-enabled/ (while disabling the default site).
 Finally, Nginx is restarted:
+
     sudo ln -s /home/pi/socket/socket_app.conf /etc/nginx/sites-available/
     sudo ln -s ../sites-available/socket_app.conf /etc/nginx/sites-enabled/
     sudo rm /etc/nginx/sites-enabled/default
