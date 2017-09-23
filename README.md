@@ -32,9 +32,9 @@ The Python dependencies are installed by:
 
 ### The Sockets
 The sockets are three [düwi](https://de.wikipedia.org/wiki/Düwi) model 0369-3.
-They are controlled by a remote control with combined on/off buttons for three
+They are controlled by a remote control with combined on/off buttons for four
 sockets A to D (and additional dimmer buttons for all four sockets, which are
-not used for this model without dimmer).
+not used for this socket model).
 
 The remote control and the sockets can be configured by DIP switches to a
 common 6-bit house code.
@@ -54,7 +54,7 @@ of the Pi.
 The setup is shown in the following image:
 ![Image of Pi setup with 433 MHz receiver and transmitter](doc/setup.jpg)
 
-## Controlling Receiver and Transmitter
+### Controlling Receiver and Transmitter
 Initially, I followed the guide in
 https://tutorials-raspberrypi.de/raspberry-pi-funksteckdosen-433-mhz-steuern/,
 which uses some C++ on top of the
