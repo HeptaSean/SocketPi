@@ -42,7 +42,7 @@ The sockets additionally have 4-bit DIP switches to configure them to be sockets
 A to D.
 
 Remote control and two of the sockets are shown in the following image:
-![Image of remote control and radio controlled socket](doc/sockets.jpg)
+![Remote control and radio controlled sockets](doc/sockets.jpg)
 
 ### Receiver and Transmitter
 The 433 MHz receiver and transmitter were ordered from
@@ -52,7 +52,10 @@ The transmitter is connected to GPIO pin 17 and the receiver to GPIO pin 27
 of the Pi.
 
 The setup is shown in the following image:
-![Image of Pi setup with 433 MHz receiver and transmitter](doc/setup.jpg)
+![Pi setup with 433 MHz receiver and transmitter](doc/setup.jpg)
+
+The pinout of the Raspberry Pi is shown in the following image in detail:
+![Pinout of Raspberry Pi](doc/pinout.png)
 
 ### Controlling Receiver and Transmitter
 Initially, I followed the guide in
