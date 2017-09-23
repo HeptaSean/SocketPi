@@ -29,28 +29,112 @@ The Python dependencies are installed by:
 (This has to be executed while being inside the virtual environment.)
 
 ## Switching the Sockets
-For the socket switching, we use a Python binding of the
+
+### The Sockets
+The sockets are three [düwi](https://de.wikipedia.org/wiki/Düwi) model 0369-3.
+They are controlled by a remote control with combined on/off buttons for three
+sockets A to D (and additional dimmer buttons for all four sockets, which are
+not used for this model without dimmer).
+
+The remote control and the sockets can be configured by DIP switches to a
+common 6-bit house code.
+The sockets additionally have 4-bit DIP switches to configure them to be sockets
+A to D.
+
+Remote control and two of the sockets are shown in the following image:
+![Image of remote control and radio controlled socket](doc/sockets.jpg)
+
+### Receiver and Transmitter
+The 433 MHz receiver and transmitter were ordered from
+[Aukru](https://aukru.com/en/home/39-aukru-3x-433-mhz-empfaenger-und-funk-sende-modul-einbrecher-alarm-433m-receiver-module.html).
+They both simply have a 5V, a ground and a data connector.
+The transmitter is connected to GPIO pin 17 and the receiver to GPIO pin 27
+of the Pi.
+
+The setup is shown in the following image:
+![Image of Pi setup with 433 MHz receiver and transmitter](doc/setup.jpg)
+
+## Controlling Receiver and Transmitter
+Initially, I followed the guide in
+https://tutorials-raspberrypi.de/raspberry-pi-funksteckdosen-433-mhz-steuern/,
+which uses some C++ on top of the
 [wiringPi](http://wiringpi.com/) C library.
 
-### Analysis of Existing Sockets
-The sockets are three [düwi](https://de.wikipedia.org/wiki/Düwi) model 0369-3.
-They were originally controlled by a remote control with a combined on/off
-button for each of the sockets (and a button for a non-existing fourth
-switch and additional dimmer buttons for all four switches, which are not
-used for this model without dimmer).
+In order to have a pure Python solution, I switched to the
+[Python binding](https://github.com/WiringPi/WiringPi-Python) of wiringPi.
+The library is already installed by `requirements.txt` above.
 
-The remote control and the switches can be configured by a 6-bit DIP switch
-to a common house code, which is set to 111111 on my devices.
-Following the guide in
-https://tutorials-raspberrypi.de/raspberry-pi-funksteckdosen-433-mhz-steuern/,
-I found the following codes for this setting:
+### Analysis of Socket Codes
+TODO
 
-Socket | On/Off | Dimmer
--------|--------|-------
-A      | 340    | 337
-B      | 1108   | 1105
-C      | 1348   | 1345
-D      | 1300   | 1297
+I found the following codes:
+
+House Code | A On/Off | A Dimmer | B On/Off | B Dimmer | C On/Off | C Dimmer | D On/Off | D Dimmer
+-----------|----------|----------|----------|----------|----------|----------|----------|---------
+000000
+000001
+000010
+000011
+000100
+000101
+000110
+000111
+001000
+001001
+001010
+001011
+001100
+001101
+001110
+001111
+010000
+010001
+010010
+010011
+010100
+010101
+010110
+010111
+011000
+011001
+011010
+011011
+011100
+011101
+011110
+011111
+100000
+100001
+100010
+100011
+100100
+100101
+100110
+100111
+101000
+101001
+101010
+101011
+101100
+101101
+101110
+101111
+110000
+110001
+110010
+110011
+110100
+110101
+110110
+110111
+111000
+111001
+111010
+111011
+111100
+111101
+111110
+111111     | 340      | 337      | 1108     | 1105     | 1348     | 1345     | 1300     | 1297
 
 ### Python Script to Switch Sockets
 A small Python script, which sends the on/off codes to sockets A to D,
@@ -61,8 +145,6 @@ is implemented in socket_switch.py and can be executed by:
 ## Web Interface
 The sockets shall be controlled by a simple web interface created with
 Python behind a Nginx web server.
-We roughly follow the guide in
-https://www.digitalocean.com/community/tutorials/how-to-serve-django-applications-with-uwsgi-and-nginx-on-ubuntu-14-04.
 
 ### Install Dependencies
 We install uWSGI (globally, outside of virtual environments):
