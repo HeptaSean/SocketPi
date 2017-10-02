@@ -1,1 +1,2 @@
-wiringpi==2.44.4
+rpi-rf==0.9.6
+RPi.GPIO==0.6.3
