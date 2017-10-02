@@ -2,48 +2,62 @@ import sys
 import time
 from RPi import GPIO
 
-PIN = 17
-PULSE_LENGTH = 350
-BITS = 24
-REPEAT = 10
-CODES = {'A': 340, 'B': 1108, 'C': 1348, 'D': 1300}
+class SocketRemote:
+    pin = 17
+    pulse_length = 300
+    repeat = 10
+    house_code = '000000'
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(PIN, GPIO.OUT, initial=GPIO.LOW)
-GPIO.setwarnings(False)
+    def __init__(self, house_code='000000'):
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setwarnings(False)
+        GPIO.setup(self.pin, GPIO.OUT, initial=GPIO.LOW)
+        self.house_code = house_code
 
-def send_code(code):
-    bits = format(code, '0{}b'.format(BITS))
-    for _ in range(REPEAT):
-        GPIO.output(PIN, GPIO.HIGH)
-        time.sleep(   PULSE_LENGTH/1000000.0)
-        GPIO.output(PIN, GPIO.LOW)
-        time.sleep(31*PULSE_LENGTH/1000000.0)
-        for bit in bits:
-            if bit == '0':
-                GPIO.output(PIN, GPIO.HIGH)
-                time.sleep(  PULSE_LENGTH/1000000.0)
-                GPIO.output(PIN, GPIO.LOW)
-                time.sleep(3*PULSE_LENGTH/1000000.0)
-            if bit == '1':
-                GPIO.output(PIN, GPIO.HIGH)
-                time.sleep(3*PULSE_LENGTH/1000000.0)
-                GPIO.output(PIN, GPIO.LOW)
-                time.sleep(  PULSE_LENGTH/1000000.0)
+    def send_hi_lo(self, hi, lo):
+        GPIO.output(self.pin, GPIO.HIGH)
+        time.sleep(hi * self.pulse_length / 1000000.0)
+        GPIO.output(self.pin, GPIO.LOW)
+        time.sleep(lo * self.pulse_length / 1000000.0)
+
+    def send_sync(self):
+        self.send_hi_lo(1, 31)
+
+    def send_zero(self):
+        self.send_hi_lo(1, 3)
+
+    def send_one(self):
+        self.send_hi_lo(3, 1)
+
+    def switch_socket(self, socket):
+        sockets = { 'A': '00010101', 'B': '01000101',
+                    'C': '01010100', 'D': '01010001' }
+        socket = socket.upper()
+        if not socket in sockets:
+            return False
+        socket = sockets[socket]
+        bit_string = ''
+        for bit in self.house_code:
+            bit_string += '0{}'.format(bit)
+        bit_string += socket
+        bit_string += '0100'
+        for _ in range(self.repeat):
+            self.send_sync()
+            for bit in bit_string:
+                if bit == '0':
+                    self.send_zero()
+                if bit == '1':
+                    self.send_one()
+        return True
+
+    def close(self):
+        GPIO.cleanup()
 
 if __name__ == '__main__':
-    argc = len(sys.argv) - 1
-    if argc < 1 or argc > 1:
-        print("Expected exactly one argument (the socket), " +
-                "got {}!".format(argc))
-        exit(1)
-
-    socket = sys.argv[1].upper()
-    if not socket in CODES:
-        print("Socket {} not known!".format(socket))
-        exit(1)
-
-    code = CODES[socket]
-    print("Sending code '{}'.".format(code))
-    send_code(code)
-    GPIO.cleanup()
+    socket = sys.argv[1]
+    print("Switching socket '{}'.".format(socket))
+    remote = SocketRemote()
+    success = remote.switch_socket(socket)
+    remote.close()
+    if not success:
+        print("Socket '{}' not known!.".format(socket))

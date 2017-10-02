@@ -1,18 +1,14 @@
-from socket_switch import send_code
+from socket_switch import SocketRemote
 
 def application(environ, start_response):
     query = environ['QUERY_STRING']
     socket = query.upper()
-    if socket == 'A':
-        send_code(340)
-    elif socket == 'B':
-        send_code(1108)
-    elif socket == 'C':
-        send_code(1348)
-    elif socket == 'D':
-        send_code(1300)
-    else:
-        socket = ''
+    if socket:
+        remote = SocketRemote()
+        success = remote.switch_socket(socket)
+        remote.close()
+        if not success:
+            socket = ''
     body = """<!DOCTYPE html>
 <html lang="en">
   <head>
