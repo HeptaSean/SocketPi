@@ -6,7 +6,6 @@ class SocketRemote:
     pin = 17
     pulse_length = 300
     repeat = 10
-    house_code = '000000'
 
     def __init__(self, house_code='000000'):
         GPIO.setmode(GPIO.BCM)
