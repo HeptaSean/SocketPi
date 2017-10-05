@@ -1,5 +1,6 @@
 from socket_switch import SocketRemote
 
+
 def application(environ, start_response):
     query = environ['QUERY_STRING']
     socket = query.upper()
@@ -51,7 +52,11 @@ p.status {
 }
     </style>
     <script>
-history.replaceState(null, "Socket Switching App", location.href.split('?')[0]);
+history.replaceState(
+    null,
+    "Socket Switching App",
+    location.href.split('?')[0]
+);
     </script>
   </head>
   <body>
@@ -67,10 +72,11 @@ history.replaceState(null, "Socket Switching App", location.href.split('?')[0]);
 </html>"""
     body = body.encode('utf-8')
     status = '200 OK'
-    headers = [ ('Content-Type', 'text/html'),
-                ('Content-Length', str(len(body))) ]
+    headers = [('Content-Type', 'text/html'),
+               ('Content-Length', str(len(body)))]
     start_response(status, headers)
     return [body]
+
 
 if __name__ == '__main__':
     from wsgiref.simple_server import make_server

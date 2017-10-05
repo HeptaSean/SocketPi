@@ -2,6 +2,7 @@ import sys
 import time
 from RPi import GPIO
 
+
 class SocketRemote:
     pin = 17
     pulse_length = 300
@@ -29,10 +30,10 @@ class SocketRemote:
         self.send_hi_lo(3, 1)
 
     def switch_socket(self, socket):
-        sockets = { 'A': '00010101', 'B': '01000101',
-                    'C': '01010100', 'D': '01010001' }
+        sockets = {'A': '00010101', 'B': '01000101',
+                   'C': '01010100', 'D': '01010001'}
         socket = socket.upper()
-        if not socket in sockets:
+        if socket not in sockets:
             return False
         socket = sockets[socket]
         bit_string = ''
@@ -51,6 +52,7 @@ class SocketRemote:
 
     def close(self):
         GPIO.cleanup()
+
 
 if __name__ == '__main__':
     socket = sys.argv[1]
