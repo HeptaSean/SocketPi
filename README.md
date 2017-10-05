@@ -90,12 +90,12 @@ switches down) would correspond to 555.
 
 The next eight bits, i.e., two hexadecimal digits encode the socket:
 
-Socket | Bits     | Hexadecimal
--------|----------|------------
-A      | 00010101 | 15
-B      | 01000101 | 45
-C      | 01010100 | 54
-D      | 01010001 | 51
+Socket|Bits|Hexadecimal
+------|----|-----------
+A|00010101|15
+B|01000101|45
+C|01010100|54
+D|01010001|51
 
 The last four bits are 0100 (hexadecimal 4) for on/off and 0001
 (hexadecimal 1) for dimmer.
@@ -125,7 +125,7 @@ $ sudo apt install nginx-light
 
 ### Configure uWSGI and Nginx
 The application resides in the *socket_app.py* script and should be mounted
-at http://localhost/socket.
+at <http://localhost/socket>.
 
 For uWSGI, we create the *socket_app.ini* uWSGI configuration file and a
 *socket_app.service* systemd unit, which is linked from
