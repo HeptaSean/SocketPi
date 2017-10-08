@@ -3,11 +3,11 @@ SocketPi is my first project for the Raspberry Pi 3.
 It uses a simple 433 MHz transmitter to switch some old radio controlled
 sockets.
 
-## Install Dependencies
+## Install Python Virtual Environment Dependencies
 First, we want to work in a Python virtual environment:
 ```sh
-$ sudo apt install python3-pip
-$ sudo -H pip3 install virtualenv virtualenvwrapper
+sudo apt install python3-pip
+sudo -H pip3 install virtualenv virtualenvwrapper
 ```
 
 We add the following at the end of .bashrc:
@@ -20,14 +20,14 @@ source /usr/local/bin/virtualenvwrapper.sh
 We create a virtual environment for our socket project, which we can
 deactivate and later reenter with the helpers from virtualenvwrapper:
 ```sh
-$ mkvirtualenv socket
-$ deactivate
-$ workon socket
+mkvirtualenv socket
+deactivate
+workon socket
 ```
 
 The Python dependencies are installed by:
 ```sh
-$ pip install -r requirements.txt
+pip install -r requirements.txt
 ```
 (This has to be executed while being inside the virtual environment.)
 
@@ -90,12 +90,12 @@ switches down) would correspond to 555.
 
 The next eight bits, i.e., two hexadecimal digits encode the socket:
 
-Socket|Bits|Hexadecimal
-------|----|-----------
-A|00010101|15
-B|01000101|45
-C|01010100|54
-D|01010001|51
+| Socket | Bits     | Hexadecimal |
+|--------|----------|-------------|
+| A      | 00010101 | 15          |
+| B      | 01000101 | 45          |
+| C      | 01010100 | 54          |
+| D      | 01010001 | 51          |
 
 The last four bits are 0100 (hexadecimal 4) for on/off and 0001
 (hexadecimal 1) for dimmer.
@@ -104,23 +104,23 @@ The last four bits are 0100 (hexadecimal 4) for on/off and 0001
 A small Python script, which sends the on/off codes to sockets A to D,
 is implemented in socket_switch.py and can be executed by:
 ```sh
-$ python socket_switch.py <socket>
+python socket_switch.py <socket>
 ```
 
 ## Web Interface
 The sockets shall be controlled by a simple web interface created with
 Python behind a Nginx web server.
 
-### Install Dependencies
+### Install Python Web Development Dependencies
 We install uWSGI (globally, outside of virtual environments):
 ```sh
-$ sudo apt install python3-dev
-$ sudo -H pip3 install uwsgi
+sudo apt install python3-dev
+sudo -H pip3 install uwsgi
 ```
 
 And we install Nginx as a reverse proxy in front of uWSGI:
 ```sh
-$ sudo apt install nginx-light
+sudo apt install nginx-light
 ```
 
 ### Configure uWSGI and Nginx
@@ -131,9 +131,9 @@ For uWSGI, we create the *socket_app.ini* uWSGI configuration file and a
 *socket_app.service* systemd unit, which is linked from
 */etc/systemd/system/*, enabled and started:
 ```sh
-$ sudo ln -s /home/pi/socket/socket_app.service /etc/systemd/system/
-$ sudo systemctl enable socket_app.service
-$ sudo systemctl start socket_app.service
+sudo ln -s /home/pi/socket/socket_app.service /etc/systemd/system/
+sudo systemctl enable socket_app.service
+sudo systemctl start socket_app.service
 ```
 
 For Nginx, we create the *socket_app.conf* Nginx configuration file, which
@@ -141,8 +141,8 @@ is linked from */etc/nginx/sites-available/* and enabled by a symlink in
 */etc/nginx/sites-enabled/* (while disabling the default site).
 Finally, Nginx is restarted:
 ```sh
-$ sudo ln -s /home/pi/socket/socket_app.conf /etc/nginx/sites-available/
-$ sudo ln -s ../sites-available/socket_app.conf /etc/nginx/sites-enabled/
-$ sudo rm /etc/nginx/sites-enabled/default
-$ sudo systemctl restart nginx.service
+sudo ln -s /home/pi/socket/socket_app.conf /etc/nginx/sites-available/
+sudo ln -s ../sites-available/socket_app.conf /etc/nginx/sites-enabled/
+sudo rm /etc/nginx/sites-enabled/default
+sudo systemctl restart nginx.service
 ```
